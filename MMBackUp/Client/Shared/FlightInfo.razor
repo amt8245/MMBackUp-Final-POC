@@ -1,0 +1,65 @@
+﻿@using MMBackUp.Shared
+@inject HttpClient Http
+<h3>FlightInfo</h3>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Flight Key</th>
+			<th>Flight Date</th>
+			<th>Flight Number</th>
+			<th>ACReg</th>
+			<th>ACType</th>
+			<th>Flight ID</th>
+			<th>Out Time</th>
+			<th>Off Time</th>
+			<th>On Time</th>
+			<th>In Time</th>
+			<th>STD</th>
+			<th>STA</th>
+			<th>Status</th>
+			<th>Special Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var ting in flights)
+		{
+			<tr>
+				<td>@ting.key_p</td>
+				<td>@ting.fltdate</td>
+				<td>@ting.flt_nbr</td>
+				<td>@ting.acreg</td>
+				<td>@ting.actype</td>
+				<td>@ting.flt_id</td>
+				<td>@ting.out_</td>
+				<td>@ting.off_</td>
+				<td>@ting.on_</td>
+				<td>@ting.in_</td>
+				<td>@ting.STD</td>
+				<td>@ting.STA</td>
+				<td>@ting.status</td>
+				<td>@ting.specialstatus</td>
+				<td>@ting.specialstatus</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@code {
+	private static List<MMBackUp.Shared.FlightInfo> flights = new List<MMBackUp.Shared.FlightInfo>();
+	[Parameter]
+	public int? days { get; set; }
+	protected override async Task OnInitializedAsync()
+	{
+		if (days == 0 || days == null)
+	{
+			var result = await Http.GetFromJsonAsync<ServiceResponse<List<MMBackUp.Shared.FlightInfo>>>("api/FlightInfo");
+			if (result != null && result.Data != null) { flights = result.Data; }
+		}
+		else	
+		{
+			var result = await Http.GetFromJsonAsync<ServiceResponse<List<MMBackUp.Shared.FlightInfo>>>($"api/FlightInfo/{days.ToString()}");
+			if (result != null && result.Data != null) { flights = result.Data; }
+		}
+	}
+}
